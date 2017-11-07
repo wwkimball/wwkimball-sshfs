@@ -12,13 +12,13 @@ class sshfs::server(
   # (account) resource management is a very complex subject that has been solved
   # many times over by other more-qualified Puppet modules.
   if !defined(User[$share_user]) {
-    fail("You must manage the ${share_user} User via a Puppet module that specializes in user account management.")
+    fail("You must manage the User named, ${share_user}, via a Puppet module that specializes in user account management.")
   }
   if !defined(Group[$share_group]) {
-    fail("You must manage the ${share_group} Group via a Puppet module that specializes in user account management.")
+    fail("You must manage the Group named, ${share_group}, via a Puppet module that specializes in user account management.")
   }
   if !defined(Ssh_authorized_key[$ssh_authorized_key_title]) {
-    fail("You must manage the ${ssh_authorized_key_title} SSH authorized (public) key via a Puppet module that specializes in user account management.")
+    fail("You must manage the SSH authorized (public) key with title, ${ssh_authorized_key_title}, via a Puppet module that specializes in user account management.")
   }
 
   # Ensure the share directory exists and is owned by the specified user and
@@ -33,9 +33,9 @@ class sshfs::server(
   # Export this server's SSH host key so all clients can import it.  Without
   # this, all SSH connections to this sshfs server will hang, waiting for human
   # review and manual acceptance of this key.
-  @@sshkey { $facts['hostname']:
-    type => 'ssh-rsa',
-    key  => $facts['sshrsakey'],
+  @@sshkey { $facts['networking']['fqdn']:
+    type => 'ecdsa-sha2-nistp256',
+    key  => $facts['ssh']['ecdsa']['key'],
     tag  => 'sshfs-server-key',
   }
 }
