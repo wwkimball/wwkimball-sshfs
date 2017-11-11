@@ -3,40 +3,24 @@
 # keys, and top-level directories for the various mountable shares.
 #
 class sshfs::server(
-  String[2]        $share_user,
-  String[2]        $share_group,
-  String[1]        $ssh_authorized_key_title,
-  Stdlib::Unixpath $share_path,
+  Boolean                            $manage_share_group,
+  Boolean                            $manage_share_key,
+  Boolean                            $manage_share_user,
+  String[2]                          $share_group,
+  Enum['present', 'absent']          $share_group_ensure,
+  Variant[Integer, String]           $share_group_id,
+  Enum['present', 'absent']          $share_key_ensure,
+  Stdlib::Unixpath                   $share_path,
+  String[2]                          $share_user,
+  Enum['present', 'absent']          $share_user_ensure,
+  Optional[Variant[Integer, String]] $share_user_id  = undef,
+  Optional[String[1]]                $share_key      = undef,
+  Optional[String[1]]                $share_key_type = undef,
 ) {
-  # The user, its group, and public key must be managed elsewhere.  User
-  # (account) resource management is a very complex subject that has been solved
-  # many times over by other more-qualified Puppet modules.
-  if !defined(User[$share_user]) {
-    fail("You must manage the User named, ${share_user}, via a Puppet module that specializes in user account management.")
-  }
-  if !defined(Group[$share_group]) {
-    fail("You must manage the Group named, ${share_group}, via a Puppet module that specializes in user account management.")
-  }
-  if !defined(Ssh_authorized_key[$ssh_authorized_key_title]) {
-    fail("You must manage the SSH authorized (public) key with title, ${ssh_authorized_key_title}, via a Puppet module that specializes in user account management.")
-  }
-
-  # Ensure the share directory exists and is owned by the specified user and
-  # group.
-  file { $share_path:
-    ensure => directory,
-    owner  => $share_user,
-    group  => $share_group,
-    mode   => '0775',
-  }
-
-  # Export this server's SSH host key so all clients can import it.  Without
-  # this, all SSH connections to this sshfs server will hang, waiting for human
-  # review and manual acceptance of this key.
-  @@sshkey { $facts['networking']['fqdn']:
-    type => 'ecdsa-sha2-nistp256',
-    key  => $facts['ssh']['ecdsa']['key'],
-    tag  => 'sshfs-server-key',
-  }
+  class { '::sshfs::server::sshhostkey': }
+  -> class { '::sshfs::server::group': }
+  -> class { '::sshfs::server::user': }
+  -> class { '::sshfs::server::filesystem': }
+  -> Class['sshfs::server']
 }
 # vim: syntax=puppet:tabstop=2:softtabstop=2:shiftwidth=2:expandtab:ai

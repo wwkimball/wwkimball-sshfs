@@ -7,6 +7,7 @@ class sshfs::client(
   String[32]       $private_key,
   String[2]        $share_user,
   String[2]        $share_group,
+  Variant[Integer, String] $share_user_id,
   Variant[Integer, String] $share_group_id,
   String[1]        $share_host,
   Stdlib::Unixpath $share_path,
@@ -64,7 +65,7 @@ class sshfs::client(
     pass     => 0,
     remounts => false,
     fstype   => 'fuse.sshfs',
-    options  => "x-systemd.automount,_netdev,user,idmap=user,transform_symlinks,allow_other,default_permissions,nonempty,identityfile=${identity_file},uid=0,gid=${share_group_id}",
+    options  => "x-systemd.automount,_netdev,user,idmap=user,transform_symlinks,allow_other,default_permissions,nonempty,identityfile=${identity_file},uid=${share_user_id},gid=${share_group_id}",
     require  => [ Package[$package_name], ],
   }
 }
