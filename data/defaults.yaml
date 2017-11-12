@@ -1,0 +1,47 @@
+---
+################################################################################
+# Default arguments for this Puppet module.
+################################################################################
+# Reusable value aliases (within this file)
+sshfs::aliases:
+  - &common_share_path /var/sshfs
+  - &common_account_name sshfs
+  - &common_account_id 65456
+
+###
+# Server Configuration
+###
+sshfs::server::manage_public_key: true
+sshfs::server::manage_share_group: true
+sshfs::server::manage_share_user: true
+sshfs::server::public_key_ensure: present
+sshfs::server::public_key_type: ssh-rsa
+sshfs::server::purge_public_keys: true
+sshfs::server::share_group: *common_account_name
+sshfs::server::share_group_ensure: present
+sshfs::server::share_group_id: *common_account_id
+sshfs::server::share_path: *common_share_path
+sshfs::server::share_user: *common_account_name
+sshfs::server::share_user_ensure: present
+sshfs::server::share_user_id: *common_account_id
+
+###
+# Client Configuration
+###
+sshfs::client::local_mount_point: /mnt/sshfs
+sshfs::client::local_share_group_ensure: present
+sshfs::client::local_share_group_id: *common_account_id
+sshfs::client::local_share_group_name: *common_account_name
+sshfs::client::local_share_user_ensure: present
+sshfs::client::local_share_user_id: *common_account_id
+sshfs::client::local_share_user_name: *common_account_name
+sshfs::client::manage_local_share_group: true
+sshfs::client::manage_local_share_user: true
+sshfs::client::manage_private_key: true
+sshfs::client::package_ensure: present
+sshfs::client::package_name: fuse-sshfs
+sshfs::client::private_key_path: /etc/pki/sshfs/sshfs_private_key
+sshfs::client::remote_share_path: *common_share_path
+sshfs::client::remote_share_user_name: *common_account_name
+
+# vim: syntax=yaml:tabstop=2:softtabstop=2:shiftwidth=2:expandtab:ai
