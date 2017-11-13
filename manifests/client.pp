@@ -2,6 +2,8 @@
 # via sshfs.
 #
 class sshfs::client(
+  String[1]                 $extra_mount_options,
+  String[4]                 $fstype,
   Stdlib::Unixpath          $local_mount_point,
   Enum['present', 'absent'] $local_share_group_ensure,
   Variant[Integer, String]  $local_share_group_id,

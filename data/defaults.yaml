@@ -28,6 +28,8 @@ sshfs::server::share_user_id: *common_account_id
 ###
 # Client Configuration
 ###
+sshfs::client::extra_mount_options: x-systemd.automount,_netdev
+sshfs::client::fstype: fuse.sshfs
 sshfs::client::local_mount_point: /mnt/sshfs
 sshfs::client::local_share_group_ensure: present
 sshfs::client::local_share_group_id: *common_account_id
