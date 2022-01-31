@@ -3,7 +3,7 @@ class sshfs::client::mount {
     ensure => directory,
     owner  => $sshfs::client::local_share_user_name,
     group  => $sshfs::client::local_share_group_name,
-    mode   => '0775',
+    mode   => $sshfs::client::local_mount_point_mode,
   } -> mount { $sshfs::client::local_mount_point:
     ensure   => mounted,
     atboot   => true,
