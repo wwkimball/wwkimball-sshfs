@@ -29,12 +29,13 @@ class sshfs::client::user {
     }
 
     file { $sshfs::client::private_key_path:
-      ensure  => file,
-      content => $sshfs::client::private_key,
-      owner   => 'root',
-      group   => 'root',
-      mode    => '0400',
-      require => [ File[$key_path] ],
+      ensure    => file,
+      content   => $sshfs::client::private_key,
+      owner     => 'root',
+      group     => 'root',
+      mode      => '0400',
+      require   => [ File[$key_path] ],
+      show_diff => false,
     }
   }
 }
